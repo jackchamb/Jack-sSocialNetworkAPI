@@ -3,7 +3,7 @@ const thoughtsController = {
     createThoughts({params, body}, res) {
         Thoughts.create(body)
         .then(({id}) => {
-            return Users.findAndUpdate({id: params.userId}, {$push: {thoughts: id}}), {new: true}
+            return Users.findAndUpdate({id_: params.userId}, {$push: {thoughts: id}}), {new: true}
         })
         .then(dbThoughtsData => { if (!dbThoughtsData) {
             res.status(404).json({message: 'No user found with this id'});
@@ -24,7 +24,7 @@ const thoughtsController = {
         });
     },
     getThoughtById({params}, res) {
-        Thoughts.findById({id:params.id})
+        Thoughts.findById({id_:params.id})
         .populate({path: 'reactions', select: 'v_v'})
         .select('v_v')
         .then(dbThoughtsData => {
@@ -40,7 +40,7 @@ const thoughtsController = {
         });
     },
     updateThought({params, body}, res) {
-        Thoughts.findByIdAndUpdate({id:params.id}, body, {new: true, runValidators: true})
+        Thoughts.findByIdAndUpdate({id_:params.id}, body, {new: true, runValidators: true})
         .populate({path: 'reactions', select: 'v_v'})
         .select('v_v')
         .then(dbThoughtsData => {
@@ -53,7 +53,7 @@ const thoughtsController = {
         .catch(err => res.json(err));
     },
     deleteThought({params}, res) {
-        Thoughts.findByIdAndDelete({id:params.id})
+        Thoughts.findByIdAndDelete({id_:params.id})
         .then(dbThoughtsData => {
             if (!dbThoughtsData) {
                 res.status(404).json({message: 'No thoughts found with this id'});
@@ -64,7 +64,7 @@ const thoughtsController = {
         .catch(err => res.status(400).json(err));
     },
     getThoughtReactions({params, body}, res) {
-        Thoughts.findById({id:params.id}, {$push: {reactions: body}}, {new: true, runValidators: true})
+        Thoughts.findById({id_:params.id}, {$push: {reactions: body}}, {new: true, runValidators: true})
         .populate({path: 'reactions', select: 'v_v'})
         .select('v_v')
         .then(dbThoughtsData => {
